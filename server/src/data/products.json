@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "title": "Organic Cotton Kurta Set",
+    "price": 2499,
+    "category": "clothing",
+    "imageUrl": "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500",
+    "description": "Handwoven organic cotton kurta with traditional block prints. Made by artisans in Rajasthan using natural dyes.",
+    "rating": 4.5,
+    "stock": 15
+  },
+  {
+    "id": "2",
+    "title": "Bamboo Fiber Bedsheet Set",
+    "price": 3299,
+    "category": "home",
+    "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500",
+    "description": "Ultra-soft bamboo fiber bedsheets that are naturally antibacterial and temperature regulating.",
+    "rating": 4.8,
+    "stock": 8
+  },
+  {
+    "id": "3",
+    "title": "Handcrafted Copper Water Bottle",
+    "price": 899,
+    "category": "wellness",
+    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
+    "description": "Pure copper water bottle with Ayurvedic benefits. Handcrafted by traditional artisans.",
+    "rating": 4.3,
+    "stock": 25
+  },
+  {
+    "id": "4",
+    "title": "Organic Turmeric Face Pack",
+    "price": 599,
+    "category": "beauty",
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500",
+    "description": "Natural turmeric and neem face pack made from organic ingredients grown in Kerala.",
+    "rating": 4.6,
+    "stock": 30
+  },
+  {
+    "id": "5",
+    "title": "Jute Shopping Bag Set",
+    "price": 449,
+    "category": "accessories",
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500",
+    "description": "Set of 3 eco-friendly jute bags with traditional Indian prints. Perfect for sustainable shopping.",
+    "rating": 4.2,
+    "stock": 40
+  },
+  {
+    "id": "6",
+    "title": "Khadi Cotton Saree",
+    "price": 4999,
+    "category": "clothing",
+    "imageUrl": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500",
+    "description": "Handspun khadi cotton saree with natural indigo dye. Supporting traditional weavers.",
+    "rating": 4.9,
+    "stock": 5
+  },
+  {
+    "id": "7",
+    "title": "Wooden Kitchen Utensil Set",
+    "price": 1299,
+    "category": "home",
+    "imageUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500",
+    "description": "Set of 5 wooden kitchen utensils made from sustainable mango wood. Chemical-free finish.",
+    "rating": 4.4,
+    "stock": 20
+  },
+  {
+    "id": "8",
+    "title": "Herbal Hair Oil",
+    "price": 799,
+    "category": "beauty",
+    "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
+    "description": "Ayurvedic hair oil with coconut, amla, and bhringraj. Made using traditional cold-press method.",
+    "rating": 4.7,
+    "stock": 18
+  },
+  {
+    "id": "9",
+    "title": "Handwoven Cotton Throw",
+    "price": 1899,
+    "category": "home",
+    "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500",
+    "description": "Soft cotton throw with traditional Indian motifs. Perfect for adding warmth and style.",
+    "rating": 4.5,
+    "stock": 12
+  },
+  {
+    "id": "10",
+    "title": "Organic Honey Collection",
+    "price": 1199,
+    "category": "wellness",
+    "imageUrl": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500",
+    "description": "Set of 3 organic honey varieties from different regions of India. Raw and unprocessed.",
+    "rating": 4.8,
+    "stock": 22
+  }
+]
