@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 20% 97%;
+    --foreground: 30 10% 15%;
+    --card: 30 20% 95%;
+    --card-foreground: 30 10% 15%;
+    --popover: 30 20% 95%;
+    --popover-foreground: 30 10% 15%;
+    --primary: 25 35% 55%;
+    --primary-foreground: 30 20% 97%;
+    --secondary: 30 15% 85%;
+    --secondary-foreground: 30 10% 15%;
+    --muted: 30 15% 90%;
+    --muted-foreground: 30 8% 45%;
+    --accent: 85 25% 65%;
+    --accent-foreground: 30 10% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 25 35% 55%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 180 2% 12%;
+    --foreground: 30 20% 95%;
+    --card: 180 2% 14%;
+    --card-foreground: 30 20% 95%;
+    --popover: 180 2% 14%;
+    --popover-foreground: 30 20% 95%;
+    --primary: 25 35% 55%;
+    --primary-foreground: 30 20% 97%;
+    --secondary: 180 2% 16%;
+    --secondary-foreground: 30 20% 95%;
+    --muted: 180 2% 16%;
+    --muted-foreground: 30 8% 65%;
+    --accent: 85 25% 65%;
+    --accent-foreground: 30 10% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 180 2% 18%;
+    --input: 180 2% 18%;
+    --ring: 25 35% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  .dark body {
+    background-image: url('/background.png');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-earth-terracotta hover:bg-earth-brown text-white px-6 py-2 rounded-md transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-earth-sage hover:bg-earth-sage/80 text-white px-6 py-2 rounded-md transition-colors;
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 20s linear infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 3s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(-10px);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-8px) rotate(2deg);
+    }
+    66% {
+      transform: translateY(-4px) rotate(-1deg);
+    }
+  }
+}
