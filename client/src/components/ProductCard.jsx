@@ -20,7 +20,7 @@ const ProductCard = ({ product }) => {
     addToCart(product);
     setIsAdded(true);
     toast.success(`${product.title} added to cart!`);
-    
+
     setTimeout(() => {
       setIsAdded(false);
     }, 2000);
@@ -62,9 +62,9 @@ const ProductCard = ({ product }) => {
             onClick={handleAddToCart}
             className={`w-full transition-all duration-300 text-xs md:text-sm py-2 ${
               isAdded 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : ''
-            }`}
+              }`}
             size="sm"
           >
             {isAdded ? (
