@@ -10,8 +10,8 @@ import { errorHandler } from './middleware/error.middleware.js';
 const app = express();
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL] 
+  origin: process.env.NODE_ENV === 'production'
+    ? [process.env.FRONTEND_URL]
     : [process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 };
@@ -19,6 +19,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the Handloom API' });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
