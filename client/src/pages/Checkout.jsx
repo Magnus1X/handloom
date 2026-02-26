@@ -22,7 +22,7 @@ const Checkout = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showNewAddress, setShowNewAddress] = useState(false);
-  
+
   const { cart, getTotalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const { isDark } = useTheme();
@@ -30,6 +30,12 @@ const Checkout = () => {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  useEffect(() => {
+    if (cart.length === 0) {
+      navigate('/cart');
+    }
+  }, [cart, navigate]);
 
   const fetchAddresses = async () => {
     try {
@@ -59,7 +65,7 @@ const Checkout = () => {
 
     try {
       let shippingAddress;
-      
+
       if (selectedAddress) {
         shippingAddress = {
           name: selectedAddress.fullName,
@@ -96,7 +102,6 @@ const Checkout = () => {
   };
 
   if (cart.length === 0) {
-    navigate('/cart');
     return null;
   }
 
@@ -104,7 +109,7 @@ const Checkout = () => {
     <div className={`min-h-screen ${isDark ? 'bg-background' : 'bg-earth-cream/30'}`}>
       <div className="container mx-auto px-4 py-8">
         <h1 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-earth-brown'} mb-8`}>Checkout</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
             <Card className={isDark ? 'bg-black/50 border-white/10' : ''}>
@@ -119,13 +124,12 @@ const Checkout = () => {
                       {addresses.map((address) => (
                         <div
                           key={address._id}
-                          className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                            selectedAddress?._id === address._id
+                          className={`p-4 rounded-lg border cursor-pointer transition-all ${selectedAddress?._id === address._id
                               ? 'border-earth-terracotta bg-earth-terracotta/10'
                               : isDark
-                              ? 'border-white/20 bg-white/5 hover:bg-white/10'
-                              : 'border-earth-beige bg-earth-cream/20 hover:bg-earth-cream/40'
-                          }`}
+                                ? 'border-white/20 bg-white/5 hover:bg-white/10'
+                                : 'border-earth-beige bg-earth-cream/20 hover:bg-earth-cream/40'
+                            }`}
                           onClick={() => {
                             setSelectedAddress(address);
                             setShowNewAddress(false);
@@ -136,13 +140,12 @@ const Checkout = () => {
                               <MapPin className="h-4 w-4 inline mr-1" />
                               {address.type} {address.isDefault && '(Default)'}
                             </span>
-                            <div className={`w-4 h-4 rounded-full border-2 ${
-                              selectedAddress?._id === address._id
+                            <div className={`w-4 h-4 rounded-full border-2 ${selectedAddress?._id === address._id
                                 ? 'bg-earth-terracotta border-earth-terracotta'
                                 : isDark
-                                ? 'border-white/40'
-                                : 'border-earth-brown/40'
-                            }`}></div>
+                                  ? 'border-white/40'
+                                  : 'border-earth-brown/40'
+                              }`}></div>
                           </div>
                           <p className={`text-sm ${isDark ? 'text-white/80' : 'text-earth-brown/80'} mb-1`}>
                             {address.fullName} • {address.phone}
@@ -156,7 +159,7 @@ const Checkout = () => {
                         </div>
                       ))}
                     </div>
-                    
+
                     <Button
                       type="button"
                       variant="outline"
@@ -171,7 +174,7 @@ const Checkout = () => {
                     </Button>
                   </div>
                 )}
-                
+
                 {(addresses.length === 0 || showNewAddress) && (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {error && (
@@ -179,7 +182,7 @@ const Checkout = () => {
                         {error}
                       </div>
                     )}
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="name" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
@@ -196,7 +199,7 @@ const Checkout = () => {
                           className={isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : ''}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="phone" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
                           Phone Number *
@@ -213,7 +216,7 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div>
                       <label htmlFor="street" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
                         Street Address *
@@ -229,7 +232,7 @@ const Checkout = () => {
                         className={isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : ''}
                       />
                     </div>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label htmlFor="city" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
@@ -246,7 +249,7 @@ const Checkout = () => {
                           className={isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : ''}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="state" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
                           State *
@@ -262,7 +265,7 @@ const Checkout = () => {
                           className={isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : ''}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="pincode" className={`block text-sm font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-1`}>
                           Pincode *
@@ -279,7 +282,7 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="pt-4">
                       <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>Payment Method</h3>
                       <div className={`${isDark ? 'bg-white/10' : 'bg-earth-cream/50'} p-4 rounded-lg`}>
@@ -290,7 +293,7 @@ const Checkout = () => {
                         <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'} mt-1`}>Pay when your order is delivered</p>
                       </div>
                     </div>
-                    
+
                     <Button
                       type="submit"
                       className="w-full"
@@ -301,7 +304,7 @@ const Checkout = () => {
                     </Button>
                   </form>
                 )}
-                
+
                 {selectedAddress && !showNewAddress && (
                   <div className="space-y-4">
                     <div className="pt-4">
@@ -314,7 +317,7 @@ const Checkout = () => {
                         <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'} mt-1`}>Pay when your order is delivered</p>
                       </div>
                     </div>
-                    
+
                     <Button
                       onClick={handleSubmit}
                       className="w-full"
@@ -328,7 +331,7 @@ const Checkout = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           <div>
             <Card className={`sticky top-24 ${isDark ? 'bg-black/50 border-white/10' : ''}`}>
               <CardHeader>
@@ -346,18 +349,18 @@ const Checkout = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className={`border-t ${isDark ? 'border-white/10' : ''} pt-4 space-y-2`}>
                   <div className={`flex justify-between ${isDark ? 'text-white' : ''}`}>
                     <span>Subtotal</span>
                     <span>₹{getTotalPrice().toLocaleString()}</span>
                   </div>
-                  
+
                   <div className={`flex justify-between ${isDark ? 'text-white' : ''}`}>
                     <span>Shipping</span>
                     <span className="text-green-600">Free</span>
                   </div>
-                  
+
                   <div className={`flex justify-between text-lg font-bold pt-2 border-t ${isDark ? 'border-white/10 text-white' : ''}`}>
                     <span>Total</span>
                     <span className="text-earth-terracotta">₹{getTotalPrice().toLocaleString()}</span>

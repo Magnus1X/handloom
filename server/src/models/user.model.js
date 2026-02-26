@@ -52,10 +52,16 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function() { return !this.googleId; }, // Only required if not a Google user
     minlength: 6
   },
   phone: String,
+  avatar: String,
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Allows multiple null/undefined values
+  },
   addresses: [addressSchema]
 }, {
   timestamps: true

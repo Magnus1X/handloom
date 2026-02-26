@@ -82,26 +82,28 @@ export const googleLogin = async (req, res) => {
     }
 
     let user = await User.findOne({ email });
+    const isNewUser = !user;
 
     if (!user) {
       // Create new user if they don't exist
-      // Since it's Google login, we can generate a random password or leave it blank if the model allows
-      // For this project, let's generate a random password just in case it's required
-      const randomPassword = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10);
       user = new User({
-        name,
+        name: name || email.split('@')[0],
         email,
-        password: randomPassword,
         avatar: picture,
         googleId
       });
+      await user.save();
+    } else if (!user.googleId) {
+      // Link Google account to existing email user
+      user.googleId = googleId;
+      if (picture && !user.avatar) user.avatar = picture;
       await user.save();
     }
 
     const token = generateToken(user._id);
 
     res.json({
-      message: 'Google login successful',
+      message: isNewUser ? 'Account created via Google' : 'Google login successful',
       token,
       user: {
         id: user._id,

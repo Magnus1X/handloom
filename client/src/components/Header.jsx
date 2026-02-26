@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X, ChevronDown, Sun, Moon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from './ui/sheet';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
@@ -209,6 +209,10 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Mobile Menu</SheetTitle>
+                  <SheetDescription>Navigation links for mobile devices</SheetDescription>
+                </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
                   <form onSubmit={handleSearch} className="md:hidden">
                     <div className="relative">
@@ -228,7 +232,7 @@ const Header = () => {
                       </Button>
                     </div>
                   </form>
-                  
+
                   {navLinks.map((link, index) => (
                     link.dropdown ? (
                       <div key={index}>
@@ -255,7 +259,7 @@ const Header = () => {
                       </Link>
                     )
                   ))}
-                  
+
                   {isAuthenticated ? (
                     <>
                       <Link
