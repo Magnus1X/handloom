@@ -62,7 +62,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true // Allows multiple null/undefined values
   },
-  addresses: [addressSchema]
+  addresses: [addressSchema],
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true
 });

@@ -40,7 +40,12 @@ const Login = () => {
     try {
       const response = await authAPI.login(formData);
       login(response.data.user, response.data.token);
-      navigate(from, { replace: true });
+      // Redirect admin users straight to the admin panel
+      if (response.data.user?.isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed');
     } finally {
