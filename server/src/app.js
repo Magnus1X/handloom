@@ -5,6 +5,7 @@ import productsRoutes from './routes/products.routes.js';
 import ordersRoutes from './routes/orders.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import profileRoutes from './routes/profile.routes.js';
+import aiRoutes from './routes/ai.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use(errorHandler);
 
