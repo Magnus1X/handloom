@@ -61,76 +61,69 @@ const Home = () => {
       {/* Decorative Rangoli Patterns */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Hero Section Patterns */}
-        <img 
-          src="/pattern1.png" 
-          alt="" 
+        <img
+          src="/pattern1.png"
+          alt=""
           className="absolute top-32 left-16 w-20 h-20 opacity-25 animate-spin-slow"
         />
-        <img 
-          src="/pattern2.png" 
-          alt="" 
+        <img
+          src="/pattern2.png"
+          alt=""
           className="absolute top-32 right-16 w-20 h-20 opacity-25 animate-pulse"
         />
-        <img 
-          src="/pattern3.png" 
-          alt="" 
+        <img
+          src="/pattern3.png"
+          alt=""
           className="absolute bottom-32 left-16 w-18 h-18 opacity-20 animate-float"
         />
-        <img 
-          src="/pattern1.png" 
-          alt="" 
+        <img
+          src="/pattern1.png"
+          alt=""
           className="absolute bottom-32 right-16 w-18 h-18 opacity-20 animate-bounce-slow"
         />
       </div>
-      <section className="relative min-h-screen">
+      {/* HERO */}
+      <section className="relative h-[75vh] sm:h-[80vh] md:min-h-screen">
+        {/* Background image */}
         <div className="absolute inset-0">
           <img
             src={isDark ? "/hero.png" : "/hero_light.png"}
             alt="House of Homegrown Hero"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
-          <div className={`absolute inset-0 ${isDark ? 'bg-black/20' : 'bg-black/40'}`}></div>
+          {/* Strong gradient from bottom so text is always readable */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         </div>
-        {/* Hero Section Rangoli Patterns */}
-        <div className="absolute inset-0 pointer-events-none">
-          <img 
-            src="/pattern1.png" 
-            alt="" 
-            className="absolute top-20 left-20 w-24 h-24 opacity-60 animate-spin-slow"
-          />
-          <img 
-            src="/pattern2.png" 
-            alt="" 
-            className="absolute top-20 right-20 w-24 h-24 opacity-60 animate-pulse"
-          />
+
+        {/* Rangoli patterns — desktop only */}
+        <div className="absolute inset-0 pointer-events-none hidden md:block">
+          <img src="/pattern1.png" alt="" className="absolute top-20 left-20 w-24 h-24 opacity-50 animate-spin-slow" />
+          <img src="/pattern2.png" alt="" className="absolute top-20 right-20 w-24 h-24 opacity-50 animate-pulse" />
         </div>
-        <div className="relative z-10 container mx-auto px-4 py-12 md:py-20">
-          <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4 md:mb-6 drop-shadow-2xl leading-tight">
-              Celebrating India's
-              <span className="text-white block">Heritage & Craft</span>
-            </h1>
-            <p className="text-base md:text-lg lg:text-xl text-white/95 mb-6 md:mb-8 max-w-xl drop-shadow-xl leading-relaxed">
-              Discover premium, sustainable products crafted by local artisans. 
-              Every purchase supports traditional craftsmanship and sustainable living.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/shop">
-                <Button size="lg" className="bg-earth-terracotta hover:bg-earth-brown text-white shadow-lg w-full sm:w-auto">
-                  Shop Now <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
-          </div>
+
+        {/* Content pinned to bottom */}
+        <div className="absolute inset-x-0 bottom-0 z-10 container mx-auto px-5 pb-10 sm:pb-14 md:pb-20">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-2 md:mb-4 drop-shadow-2xl leading-tight">
+            Celebrating India's
+            <span className="block text-amber-300">Heritage &amp; Craft</span>
+          </h1>
+          <p className="hidden sm:block text-sm sm:text-base md:text-lg text-white/90 mb-5 md:mb-8 max-w-lg drop-shadow-xl leading-relaxed">
+            Discover premium, sustainable products crafted by local artisans.
+            Every purchase supports traditional craftsmanship.
+          </p>
+          <Link to="/shop">
+            <Button className="bg-earth-terracotta hover:bg-earth-brown text-white shadow-xl text-sm md:text-base px-6 py-2.5 md:px-8 md:py-3 rounded-full font-semibold transition-all hover:scale-105">
+              Shop Now <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 
-      <section className={`py-16 ${isDark ? 'bg-card' : 'bg-earth-cream/50'} relative overflow-hidden`}>
-        {/* No patterns in Featured Categories section */}
+      <section className={`py-8 md:py-16 ${isDark ? 'bg-card' : 'bg-earth-cream/50'} relative overflow-hidden`}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className={`text-3xl font-bold ${isDark ? 'text-foreground' : 'text-earth-brown'} mb-4`}>Featured Categories</h2>
-            <p className={`body-font ${isDark ? 'text-muted-foreground' : 'text-earth-brown/70'}`}>Discover authentic Indian products</p>
+          <div className="text-center mb-6 md:mb-12">
+            <h2 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-foreground' : 'text-earth-brown'} mb-1 md:mb-4`}>Featured Categories</h2>
+            <p className={`text-sm md:text-base ${isDark ? 'text-muted-foreground' : 'text-earth-brown/70'}`}>Discover authentic Indian products</p>
           </div>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4 mb-6 md:mb-8">
             {featuredCategories.map((category) => (
@@ -175,7 +168,7 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
               {featuredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -194,24 +187,24 @@ const Home = () => {
       <section className={`py-16 ${isDark ? 'bg-card' : 'bg-earth-cream/30'} relative overflow-hidden`}>
         {/* Decorative Rangoli Patterns - Symmetrical */}
         <div className="absolute inset-0 pointer-events-none">
-          <img 
-            src="/pattern3.png" 
-            alt="" 
+          <img
+            src="/pattern3.png"
+            alt=""
             className={`absolute top-8 left-8 w-12 h-12 ${isDark ? 'opacity-70' : 'opacity-15'} animate-spin-slow`}
           />
-          <img 
-            src="/pattern1.png" 
-            alt="" 
+          <img
+            src="/pattern1.png"
+            alt=""
             className={`absolute top-8 right-8 w-12 h-12 ${isDark ? 'opacity-70' : 'opacity-15'} animate-float`}
           />
-          <img 
-            src="/pattern2.png" 
-            alt="" 
+          <img
+            src="/pattern2.png"
+            alt=""
             className={`absolute bottom-8 left-8 w-12 h-12 ${isDark ? 'opacity-70' : 'opacity-15'} animate-pulse`}
           />
-          <img 
-            src="/pattern3.png" 
-            alt="" 
+          <img
+            src="/pattern3.png"
+            alt=""
             className={`absolute bottom-8 right-8 w-12 h-12 ${isDark ? 'opacity-70' : 'opacity-15'} animate-bounce-slow`}
           />
         </div>
