@@ -18,6 +18,8 @@ const SUBCATEGORIES = {
 const Admin = () => {
   const { isDark } = useTheme();
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [activeTab, setActiveTab] = useState('products');
   const [loading, setLoading] = useState(true);
   const [showEditProduct, setShowEditProduct] = useState(false);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -36,6 +38,7 @@ const Admin = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchOrders();
   }, []);
 
   const fetchProducts = async () => {
@@ -49,29 +52,66 @@ const Admin = () => {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/orders`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch orders');
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId, status) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+      if (response.ok) {
+        toast.success('Order status updated');
+        fetchOrders();
+      }
+    } catch (error) {
+      toast.error('Failed to update status');
+    }
+  };
+
   const handleCategoryChange = (category) => {
-    setProductData({...productData, category, subcategory: '', gender: '', sizes: [{ size: '', stock: '' }]});
+    setProductData({ ...productData, category, subcategory: '', gender: '', sizes: [{ size: '', stock: '' }] });
   };
 
   const addSizeField = () => {
-    setProductData({...productData, sizes: [...productData.sizes, { size: '', stock: '' }]});
+    setProductData({ ...productData, sizes: [...productData.sizes, { size: '', stock: '' }] });
   };
 
   const removeSizeField = (index) => {
     const newSizes = productData.sizes.filter((_, i) => i !== index);
-    setProductData({...productData, sizes: newSizes});
+    setProductData({ ...productData, sizes: newSizes });
   };
 
   const updateSizeField = (index, field, value) => {
     const newSizes = [...productData.sizes];
     newSizes[index][field] = value;
-    setProductData({...productData, sizes: newSizes});
+    setProductData({ ...productData, sizes: newSizes });
   };
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
     const loadingToast = toast.loading('Adding product...');
-    
+
     const formData = new FormData();
     formData.append('title', productData.title);
     formData.append('price', productData.price);
@@ -84,7 +124,7 @@ const Admin = () => {
     } else {
       formData.append('stock', productData.stock);
     }
-    
+
     for (let i = 0; i < productData.images.length; i++) {
       formData.append('images', productData.images[i]);
     }
@@ -178,7 +218,7 @@ const Admin = () => {
 
   const deleteProduct = async (productId) => {
     const loadingToast = toast.loading('Deleting product...');
-    
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/products/${productId}`, {
@@ -203,7 +243,7 @@ const Admin = () => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     const loadingToast = toast.loading('Updating product...');
-    
+
     const formData = new FormData();
     formData.append('title', productData.title);
     formData.append('price', productData.price);
@@ -216,7 +256,7 @@ const Admin = () => {
     } else {
       formData.append('stock', productData.stock);
     }
-    
+
     for (let i = 0; i < productData.images.length; i++) {
       formData.append('images', productData.images[i]);
     }
@@ -265,73 +305,131 @@ const Admin = () => {
               <h1 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>
                 Admin Dashboard
               </h1>
-              <p className={`text-xl ${isDark ? 'text-white/70' : 'text-earth-brown/70'}`}>
-                Manage your products and inventory
-              </p>
+              <div className="flex space-x-4 mt-4">
+                <button
+                  onClick={() => setActiveTab('products')}
+                  className={`px-4 py-2 font-medium rounded-md ${activeTab === 'products' ? 'bg-earth-terracotta text-white' : isDark ? 'text-white/70 hover:bg-white/10' : 'text-earth-brown hover:bg-earth-cream'} transition-colors`}
+                >
+                  Products
+                </button>
+                <button
+                  onClick={() => setActiveTab('orders')}
+                  className={`px-4 py-2 font-medium rounded-md ${activeTab === 'orders' ? 'bg-earth-terracotta text-white' : isDark ? 'text-white/70 hover:bg-white/10' : 'text-earth-brown hover:bg-earth-cream'} transition-colors`}
+                >
+                  Orders
+                </button>
+              </div>
             </div>
-            <Button onClick={() => setShowAddProduct(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
+            {activeTab === 'products' && (
+              <Button onClick={() => setShowAddProduct(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            )}
           </div>
 
-          <Card className={`${isDark ? 'bg-black/50 border-white/10' : 'bg-white border-earth-beige'}`}>
-            <CardHeader>
-              <CardTitle className={`flex items-center ${isDark ? 'text-white' : 'text-earth-brown'}`}>
-                <Package className="h-5 w-5 mr-2" />
-                Products ({products.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-20 bg-gray-200 rounded"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {products.map((product) => (
-                    <div
-                      key={product._id}
-                      className={`p-4 rounded-lg border ${isDark ? 'border-white/10 bg-white/5' : 'border-earth-beige bg-earth-cream/20'} flex items-center justify-between`}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={product.imageUrl || product.images?.[0]?.url}
-                          alt={product.title}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                        <div>
-                          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-earth-brown'}`}>
-                            {product.title}
-                          </h3>
-                          <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'}`}>
-                            ₹{product.price} • {product.category} • Stock: {product.totalStock || product.stock}
-                          </p>
+          {activeTab === 'products' && (
+            <Card className={`${isDark ? 'bg-black/50 border-white/10' : 'bg-white border-earth-beige'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center ${isDark ? 'text-white' : 'text-earth-brown'}`}>
+                  <Package className="h-5 w-5 mr-2" />
+                  Products ({products.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-20 bg-gray-200 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {products.map((product) => (
+                      <div
+                        key={product._id}
+                        className={`p-4 rounded-lg border ${isDark ? 'border-white/10 bg-white/5' : 'border-earth-beige bg-earth-cream/20'} flex items-center justify-between`}
+                      >
+                        <div className="flex items-center space-x-4">
+                          <img
+                            src={product.imageUrl || product.images?.[0]?.url}
+                            alt={product.title}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                          <div>
+                            <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-earth-brown'}`}>
+                              {product.title}
+                            </h3>
+                            <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'}`}>
+                              ₹{product.price} • {product.category} • Stock: {product.totalStock || product.stock}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteProduct(product._id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => handleDeleteProduct(product._id)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {activeTab === 'orders' && (
+            <Card className={`${isDark ? 'bg-black/50 border-white/10' : 'bg-white border-earth-beige'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center ${isDark ? 'text-white' : 'text-earth-brown'}`}>
+                  Orders ({orders.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-4">
+                    <p>Loading orders...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
+                      <div key={order._id} className={`p-4 rounded-lg border ${isDark ? 'border-white/10 bg-white/5' : 'border-earth-beige bg-earth-cream/20'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
+                        <div>
+                          <p className={`font-semibold ${isDark ? 'text-white' : 'text-earth-brown'}`}>Order #{order._id.slice(-8)}</p>
+                          <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'}`}>By: {order.userId?.name || 'Unknown'} - {order.userId?.email || ''}</p>
+                          <p className={`text-sm ${isDark ? 'text-white/70' : 'text-earth-brown/70'}`}>Total: ₹{order.totalAmount} • {new Date(order.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <select
+                            value={order.status}
+                            onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
+                            className={`p-2 border rounded ${isDark ? 'bg-black border-white/20 text-white' : 'bg-white border-earth-brown/20 text-earth-brown'}`}
+                          >
+                            <option value="Order Placed">Order Placed</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipping">Shipping</option>
+                            <option value="Out for Delivery">Out for Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -345,7 +443,7 @@ const Admin = () => {
                 <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Title</label>
                 <Input
                   value={productData.title}
-                  onChange={(e) => setProductData({...productData, title: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, title: e.target.value })}
                   required
                 />
               </div>
@@ -354,7 +452,7 @@ const Admin = () => {
                 <Input
                   type="number"
                   value={productData.price}
-                  onChange={(e) => setProductData({...productData, price: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, price: e.target.value })}
                   required
                 />
               </div>
@@ -362,7 +460,7 @@ const Admin = () => {
                 <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Description</label>
                 <textarea
                   value={productData.description}
-                  onChange={(e) => setProductData({...productData, description: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, description: e.target.value })}
                   className={`w-full p-2 border rounded h-20 ${isDark ? 'bg-black border-white/20 text-white placeholder:text-white/50' : 'bg-white border-earth-brown/20 text-earth-brown placeholder:text-earth-brown/50'}`}
                   required
                 />
@@ -373,7 +471,7 @@ const Admin = () => {
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => setProductData({...productData, images: Array.from(e.target.files)})}
+                  onChange={(e) => setProductData({ ...productData, images: Array.from(e.target.files) })}
                   className={`w-full p-2 border rounded ${isDark ? 'bg-black border-white/20 text-white file:bg-white/10 file:text-white file:border-0 file:rounded file:px-2 file:py-1 file:mr-2' : 'bg-white border-earth-brown/20 text-earth-brown file:bg-earth-cream file:text-earth-brown file:border-0 file:rounded file:px-2 file:py-1 file:mr-2'}`}
                 />
               </div>
@@ -396,7 +494,7 @@ const Admin = () => {
                 <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Title</label>
                 <Input
                   value={productData.title}
-                  onChange={(e) => setProductData({...productData, title: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, title: e.target.value })}
                   required
                 />
               </div>
@@ -405,7 +503,7 @@ const Admin = () => {
                 <Input
                   type="number"
                   value={productData.price}
-                  onChange={(e) => setProductData({...productData, price: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, price: e.target.value })}
                   required
                 />
               </div>
@@ -427,7 +525,7 @@ const Admin = () => {
                 <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Subcategory</label>
                 <select
                   value={productData.subcategory}
-                  onChange={(e) => setProductData({...productData, subcategory: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, subcategory: e.target.value })}
                   className={`w-full p-2 border rounded ${isDark ? 'bg-black border-white/20 text-white' : 'bg-white border-earth-brown/20 text-earth-brown'}`}
                   required
                 >
@@ -442,7 +540,7 @@ const Admin = () => {
                   <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Gender</label>
                   <select
                     value={productData.gender}
-                    onChange={(e) => setProductData({...productData, gender: e.target.value})}
+                    onChange={(e) => setProductData({ ...productData, gender: e.target.value })}
                     className={`w-full p-2 border rounded ${isDark ? 'bg-black border-white/20 text-white' : 'bg-white border-earth-brown/20 text-earth-brown'}`}
                     required
                   >
@@ -489,7 +587,7 @@ const Admin = () => {
                   <Input
                     type="number"
                     value={productData.stock}
-                    onChange={(e) => setProductData({...productData, stock: e.target.value})}
+                    onChange={(e) => setProductData({ ...productData, stock: e.target.value })}
                     required
                   />
                 </div>
@@ -498,7 +596,7 @@ const Admin = () => {
                 <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-white/80' : 'text-earth-brown/80'}`}>Description</label>
                 <textarea
                   value={productData.description}
-                  onChange={(e) => setProductData({...productData, description: e.target.value})}
+                  onChange={(e) => setProductData({ ...productData, description: e.target.value })}
                   className={`w-full p-2 border rounded h-20 ${isDark ? 'bg-black border-white/20 text-white placeholder:text-white/50' : 'bg-white border-earth-brown/20 text-earth-brown placeholder:text-earth-brown/50'}`}
                   required
                 />
@@ -509,7 +607,7 @@ const Admin = () => {
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => setProductData({...productData, images: Array.from(e.target.files)})}
+                  onChange={(e) => setProductData({ ...productData, images: Array.from(e.target.files) })}
                   className={`w-full p-2 border rounded ${isDark ? 'bg-black border-white/20 text-white file:bg-white/10 file:text-white file:border-0 file:rounded file:px-2 file:py-1 file:mr-2' : 'bg-white border-earth-brown/20 text-earth-brown file:bg-earth-cream file:text-earth-brown file:border-0 file:rounded file:px-2 file:py-1 file:mr-2'}`}
                   required
                 />

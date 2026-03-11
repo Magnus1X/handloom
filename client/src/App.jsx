@@ -27,6 +27,7 @@ import FAQ from './pages/FAQ';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
+import FunFacts from './pages/FunFacts';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/shipping" element={<Shipping />} />
+                  <Route path="/fun-facts" element={<FunFacts />} />
 
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={

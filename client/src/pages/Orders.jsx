@@ -29,9 +29,10 @@ const Orders = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Placed': return 'bg-blue-100 text-blue-800';
+      case 'Order Placed': return 'bg-blue-100 text-blue-800';
       case 'Processing': return 'bg-yellow-100 text-yellow-800';
-      case 'Shipped': return 'bg-purple-100 text-purple-800';
+      case 'Shipping': return 'bg-purple-100 text-purple-800';
+      case 'Out for Delivery': return 'bg-orange-100 text-orange-800';
       case 'Delivered': return 'bg-green-100 text-green-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -65,7 +66,7 @@ const Orders = () => {
     <div className={`min-h-screen ${isDark ? 'bg-background' : 'bg-earth-cream/30'}`}>
       <div className="container mx-auto px-4 py-8">
         <h1 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-earth-brown'} mb-8`}>My Orders</h1>
-        
+
         <div className="space-y-6">
           {orders.map((order) => (
             <Card key={order._id} className={isDark ? 'bg-black/50 border-white/10' : ''}>
@@ -96,7 +97,7 @@ const Orders = () => {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -128,7 +129,7 @@ const Orders = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className={`font-medium ${isDark ? 'text-white' : 'text-earth-brown'} mb-2 flex items-center`}>
                       <MapPin className="h-4 w-4 mr-1" />
@@ -144,7 +145,7 @@ const Orders = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className={`flex justify-end pt-4 border-t ${isDark ? 'border-white/10' : 'border-earth-beige'}`}>
                   <Link to={`/order/${order._id}`}>
                     <Button variant="outline" size="sm">

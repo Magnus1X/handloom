@@ -33,9 +33,10 @@ const OrderDetail = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Placed': return 'bg-blue-100 text-blue-800';
+      case 'Order Placed': return 'bg-blue-100 text-blue-800';
       case 'Processing': return 'bg-yellow-100 text-yellow-800';
-      case 'Shipped': return 'bg-purple-100 text-purple-800';
+      case 'Shipping': return 'bg-purple-100 text-purple-800';
+      case 'Out for Delivery': return 'bg-orange-100 text-orange-800';
       case 'Delivered': return 'bg-green-100 text-green-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -58,8 +59,8 @@ const OrderDetail = () => {
   const getTrackingSteps = (status) => {
     const steps = [
       { label: 'Order Placed', status: 'completed' },
-      { label: 'Processing', status: status === 'Placed' ? 'pending' : 'completed' },
-      { label: 'Shipped', status: ['Placed', 'Processing'].includes(status) ? 'pending' : 'completed' },
+      { label: 'Shipping', status: status === 'Order Placed' || status === 'Processing' ? 'pending' : 'completed' },
+      { label: 'Out for Delivery', status: ['Order Placed', 'Processing', 'Shipping'].includes(status) ? 'pending' : 'completed' },
       { label: 'Delivered', status: status === 'Delivered' ? 'completed' : 'pending' }
     ];
     return steps;
@@ -145,32 +146,29 @@ const OrderDetail = () => {
               <div className="flex items-center justify-between">
                 {getTrackingSteps(order.status).map((step, index) => (
                   <div key={index} className="flex flex-col items-center flex-1">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      step.status === 'completed' 
-                        ? 'bg-green-500 text-white' 
-                        : isDark 
-                        ? 'bg-white/20 text-white/60' 
-                        : 'bg-gray-200 text-gray-500'
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step.status === 'completed'
+                        ? 'bg-green-500 text-white'
+                        : isDark
+                          ? 'bg-white/20 text-white/60'
+                          : 'bg-gray-200 text-gray-500'
+                      }`}>
                       {step.status === 'completed' ? '✓' : index + 1}
                     </div>
-                    <span className={`text-xs mt-2 text-center ${
-                      step.status === 'completed' 
-                        ? 'text-green-600 font-medium' 
-                        : isDark 
-                        ? 'text-white/60' 
-                        : 'text-gray-500'
-                    }`}>
+                    <span className={`text-xs mt-2 text-center ${step.status === 'completed'
+                        ? 'text-green-600 font-medium'
+                        : isDark
+                          ? 'text-white/60'
+                          : 'text-gray-500'
+                      }`}>
                       {step.label}
                     </span>
                     {index < getTrackingSteps(order.status).length - 1 && (
-                      <div className={`absolute h-0.5 w-full top-4 left-1/2 -z-10 ${
-                        getTrackingSteps(order.status)[index + 1].status === 'completed'
+                      <div className={`absolute h-0.5 w-full top-4 left-1/2 -z-10 ${getTrackingSteps(order.status)[index + 1].status === 'completed'
                           ? 'bg-green-500'
                           : isDark
-                          ? 'bg-white/20'
-                          : 'bg-gray-200'
-                      }`} style={{ transform: 'translateX(50%)' }} />
+                            ? 'bg-white/20'
+                            : 'bg-gray-200'
+                        }`} style={{ transform: 'translateX(50%)' }} />
                     )}
                   </div>
                 ))}
