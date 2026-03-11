@@ -18,7 +18,7 @@ export const createOrder = async (req, res) => {
       shippingAddress,
       totalAmount,
       paymentMethod: 'COD',
-      status: 'Placed'
+      status: 'Order Placed'
     });
 
     await order.save();
@@ -50,6 +50,27 @@ export const getOrder = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }).populate('userId', 'name email');
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

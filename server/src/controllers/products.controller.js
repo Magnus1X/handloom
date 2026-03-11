@@ -4,14 +4,15 @@ import { getAllProducts, getProductById, getCategories } from '../services/produ
 
 export const getProducts = async (req, res) => {
   try {
-    const { search, category, subcategory, sort } = req.query;
+    const { search, category, subcategory, sort, gender } = req.query;
 
     let filter = {};
     if (category) filter.category = category;
     if (subcategory) filter.subcategory = subcategory;
+    if (gender) filter.gender = gender;
 
     const dbProducts = await Product.find(filter)
-      .sort(sort === 'price-asc' ? { price: 1 } : sort === 'price-desc' ? { price: -1 } : { createdAt: -1 });
+      .sort(sort === 'price-asc' ? { price: 1 } : sort === 'price-desc' ? { price: -1 } : sort === 'rating-desc' ? { rating: -1 } : sort === 'rating-asc' ? { rating: 1 } : { createdAt: -1 });
 
     let products = dbProducts;
 
