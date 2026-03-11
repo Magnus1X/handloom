@@ -44,21 +44,25 @@ const Header = () => {
     {
       label: 'Indian Taste',
       dropdown: [
-        { to: '/category/indian-taste?subcategory=spices', label: 'Spices & Masalas' },
-        { to: '/category/indian-taste?subcategory=tea', label: 'Tea & Beverages' },
-        { to: '/category/indian-taste?subcategory=grains', label: 'Organic Grains' },
-        { to: '/category/indian-taste?subcategory=pickles', label: 'Pickles & Preserves' },
-        { to: '/category/indian-taste?subcategory=sweets', label: 'Traditional Sweets' }
+        { to: '/shop?category=indian-taste&subcategory=spices', label: 'Spices & Masalas' },
+        { to: '/shop?category=indian-taste&subcategory=tea', label: 'Tea & Beverages' },
+        { to: '/shop?category=indian-taste&subcategory=grains', label: 'Organic Grains' },
+        { to: '/shop?category=indian-taste&subcategory=pickles', label: 'Pickles & Preserves' },
+        { to: '/shop?category=indian-taste&subcategory=sweets', label: 'Traditional Sweets' }
       ]
     },
     {
       label: 'Clothing',
       dropdown: [
-        { to: '/category/clothing?subcategory=sarees', label: 'Sarees' },
-        { to: '/category/clothing?subcategory=kurtas', label: 'Kurtas & Kurtis' },
-        { to: '/category/clothing?subcategory=lehengas', label: 'Lehengas' },
-        { to: '/category/clothing?subcategory=fabrics', label: 'Fabrics' }
+        { to: '/shop?category=clothing&subcategory=sarees', label: 'Sarees' },
+        { to: '/shop?category=clothing&subcategory=kurtas', label: 'Kurtas & Kurtis' },
+        { to: '/shop?category=clothing&subcategory=lehengas', label: 'Lehengas' },
+        { to: '/shop?category=clothing&subcategory=fabrics', label: 'Fabrics' }
       ]
+    },
+    {
+      label: 'Fun Facts',
+      to: '/fun-facts'
     }
   ];
 
@@ -66,9 +70,12 @@ const Header = () => {
     <header className={`${isDark ? 'bg-black/90' : 'bg-earth-cream'} backdrop-blur-sm border-b ${isDark ? 'border-white/10' : 'border-earth-beige'} sticky top-0 z-40`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="House of Homegrown" className="w-12 h-12" />
-            <span className={`text-xl font-bold ${isDark ? 'text-white' : 'text-earth-brown'}`}>House of Homegrown</span>
+          <Link to="/" className="flex items-center space-x-2 shrink-0">
+            <img src="/logo.png" alt="House of Homegrown" className="w-9 h-9 md:w-12 md:h-12" />
+            <span className={`text-base md:text-xl font-bold ${isDark ? 'text-white' : 'text-earth-brown'} hidden xs:inline`}>
+              <span className="hidden sm:inline">House of Homegrown</span>
+              <span className="sm:hidden">HoH</span>
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
@@ -152,18 +159,18 @@ const Header = () => {
               </div>
             </form>
 
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-2">
-                <Link to="/cart" className="relative">
-                  <Button variant="ghost" size="icon">
-                    <ShoppingCart className="h-5 w-5" />
-                    {getTotalItems() > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-earth-terracotta text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {getTotalItems()}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
+            <div className="flex items-center space-x-2">
+              <Link to={isAuthenticated ? "/cart" : "/login"} className="relative">
+                <Button variant="ghost" size="icon">
+                  <ShoppingCart className="h-5 w-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-earth-terracotta text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+              {isAuthenticated ? (
                 <div className="hidden md:block relative group">
                   <button className={`${isDark ? 'text-white/80 hover:text-white' : 'text-earth-brown hover:text-earth-terracotta'} transition-colors flex items-center h-10`}>
                     <User className="h-5 w-5 mr-1" />
@@ -190,17 +197,17 @@ const Header = () => {
                     </button>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm" className={`${isDark ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-earth-brown hover:text-earth-terracotta hover:bg-earth-cream'}`}>Login</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button size="sm" className="bg-earth-terracotta hover:bg-earth-brown">Sign Up</Button>
-                </Link>
-              </div>
-            )}
+              ) : (
+                <div className="hidden md:flex items-center space-x-2 ml-2">
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm" className={`${isDark ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-earth-brown hover:text-earth-terracotta hover:bg-earth-cream'}`}>Login</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button size="sm" className="bg-earth-terracotta hover:bg-earth-brown">Sign Up</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>

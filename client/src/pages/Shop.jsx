@@ -17,14 +17,17 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showFilters, setShowFilters] = useState(false);
   const { isDark } = useTheme();
-  
+
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
     category: searchParams.get('category') || '',
+    subcategory: searchParams.get('subcategory') || '',
     sort: searchParams.get('sort') || '',
     minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || ''
+    maxPrice: searchParams.get('maxPrice') || '',
+    gender: searchParams.get('gender') || ''
   });
 
   useEffect(() => {
@@ -35,27 +38,35 @@ const Shop = () => {
   useEffect(() => {
     const newSearch = searchParams.get('search') || '';
     const newCategory = searchParams.get('category') || '';
+    const newSubcategory = searchParams.get('subcategory') || '';
     const newSort = searchParams.get('sort') || '';
     const newMinPrice = searchParams.get('minPrice') || '';
     const newMaxPrice = searchParams.get('maxPrice') || '';
-    
+
     setFilters({
       search: newSearch,
       category: newCategory,
+      subcategory: newSubcategory,
       sort: newSort,
       minPrice: newMinPrice,
-      maxPrice: newMaxPrice
+      maxPrice: newMaxPrice,
+      gender: searchParams.get('gender') || ''
     });
-    
-    fetchProducts({ search: newSearch, category: newCategory, sort: newSort, minPrice: newMinPrice, maxPrice: newMaxPrice });
+
+    fetchProducts({ search: newSearch, category: newCategory, subcategory: newSubcategory, sort: newSort, minPrice: newMinPrice, maxPrice: newMaxPrice, gender: searchParams.get('gender') || '' });
   }, [searchParams]);
 
   const fetchProducts = async (filterParams = filters) => {
     try {
       setLoading(true);
-      const response = await productsAPI.getAll(filterParams);
+      // Map 'indian-taste' virtual category to 'home' which is how it's stored in DB
+      const apiParams = { ...filterParams };
+      if (apiParams.category === 'indian-taste') {
+        apiParams.category = 'home';
+      }
+      const response = await productsAPI.getAll(apiParams);
       let filteredProducts = response.data;
-      
+
       // Apply price filter
       if (filterParams.minPrice || filterParams.maxPrice) {
         filteredProducts = filteredProducts.filter(product => {
@@ -65,7 +76,7 @@ const Shop = () => {
           return price >= min && price <= max;
         });
       }
-      
+
       // Apply sorting
       if (filterParams.sort) {
         filteredProducts.sort((a, b) => {
@@ -74,6 +85,10 @@ const Shop = () => {
               return a.price - b.price;
             case 'price_high':
               return b.price - a.price;
+            case 'rating_high':
+              return (b.rating || 0) - (a.rating || 0);
+            case 'rating_low':
+              return (a.rating || 0) - (b.rating || 0);
             case 'newest':
               return new Date(b.createdAt) - new Date(a.createdAt);
             default:
@@ -81,7 +96,7 @@ const Shop = () => {
           }
         });
       }
-      
+
       setAllProducts(filteredProducts);
       setCurrentPage(1);
     } catch (error) {
@@ -103,12 +118,12 @@ const Shop = () => {
   const updateFilters = (newFilters) => {
     const updatedFilters = { ...filters, ...newFilters };
     setFilters(updatedFilters);
-    
+
     const params = new URLSearchParams();
     Object.entries(updatedFilters).forEach(([key, value]) => {
       if (value) params.set(key, value);
     });
-    
+
     setSearchParams(params);
   };
 
@@ -118,7 +133,7 @@ const Shop = () => {
   };
 
   const clearFilters = () => {
-    setFilters({ search: '', category: '', sort: '', minPrice: '', maxPrice: '' });
+    setFilters({ search: '', category: '', subcategory: '', sort: '', minPrice: '', maxPrice: '', gender: '' });
     setSearchParams({});
   };
 
@@ -136,20 +151,33 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Shop</h1>
-          <p className="text-muted-foreground">Discover our collection of sustainable, handcrafted products</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">Shop</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Discover our collection of sustainable, handcrafted products</p>
+          </div>
+          {/* Mobile filter toggle */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="lg:hidden flex items-center gap-2"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="h-4 w-4" />
+            {showFilters ? 'Hide Filters' : 'Filters'}
+          </Button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <aside className="lg:w-64 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto space-y-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar: always visible on lg, collapsible on mobile */}
+          <aside className={`${showFilters ? 'block' : 'hidden'} lg:block lg:w-64 lg:sticky lg:top-20 lg:self-start`}>
             <Card className="bg-card border-border">
               <CardContent className="p-4">
                 <h3 className="font-semibold text-card-foreground mb-4 flex items-center">
                   <Filter className="h-4 w-4 mr-2" />
                   Filters
                 </h3>
-                
+
                 <form onSubmit={handleSearch} className="mb-4">
                   <div className="relative">
                     <Input
@@ -174,7 +202,7 @@ const Shop = () => {
                     <label className="text-sm font-medium text-card-foreground mb-2 block">Category</label>
                     <select
                       value={filters.category}
-                      onChange={(e) => updateFilters({ category: e.target.value })}
+                      onChange={(e) => updateFilters({ category: e.target.value, subcategory: '' })}
                       className="w-full p-2 border border-border rounded-md bg-input text-foreground"
                     >
                       <option value="">All Categories</option>
@@ -186,6 +214,42 @@ const Shop = () => {
                     </select>
                   </div>
 
+                  {filters.category && (
+                    <div>
+                      <label className="text-sm font-medium text-card-foreground mb-2 block">Subcategory</label>
+                      <select
+                        value={filters.subcategory}
+                        onChange={(e) => updateFilters({ subcategory: e.target.value })}
+                        className="w-full p-2 border border-border rounded-md bg-input text-foreground"
+                      >
+                        <option value="">All {filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</option>
+                        {filters.category === 'clothing' && (
+                          <>
+                            <option value="sarees">Sarees</option>
+                            <option value="kurtas">Kurtas</option>
+                            <option value="lehengas">Lehengas</option>
+                            <option value="fabrics">Fabrics</option>
+                          </>
+                        )}
+                        {filters.category === 'home' && (
+                          <>
+                            <option value="pottery">Pottery</option>
+                            <option value="textiles">Textiles</option>
+                          </>
+                        )}
+                        {filters.category === 'indian-taste' && (
+                          <>
+                            <option value="spices">Spices</option>
+                            <option value="tea">Tea</option>
+                            <option value="grains">Grains</option>
+                            <option value="pickles">Pickles</option>
+                            <option value="sweets">Sweets</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                  )}
+
                   <div>
                     <label className="text-sm font-medium text-card-foreground mb-2 block">Sort By</label>
                     <select
@@ -196,6 +260,8 @@ const Shop = () => {
                       <option value="">Default</option>
                       <option value="price_low">Price: Low to High</option>
                       <option value="price_high">Price: High to Low</option>
+                      <option value="rating_high">Rating: High to Low</option>
+                      <option value="rating_low">Rating: Low to High</option>
                       <option value="newest">Newest First</option>
                     </select>
                   </div>
@@ -227,7 +293,22 @@ const Shop = () => {
                     </Button>
                   </div>
 
-                  {(filters.search || filters.category || filters.sort || filters.minPrice || filters.maxPrice) && (
+                  <div>
+                    <label className="text-sm font-medium text-card-foreground mb-2 block">Gender</label>
+                    <select
+                      value={filters.gender}
+                      onChange={(e) => updateFilters({ gender: e.target.value })}
+                      className="w-full p-2 border border-border rounded-md bg-input text-foreground"
+                    >
+                      <option value="">All Genders</option>
+                      <option value="men">Men</option>
+                      <option value="women">Women</option>
+                      <option value="kids">Kids</option>
+                      <option value="unisex">Unisex</option>
+                    </select>
+                  </div>
+
+                  {(filters.search || filters.category || filters.subcategory || filters.sort || filters.minPrice || filters.maxPrice || filters.gender) && (
                     <Button
                       variant="outline"
                       onClick={clearFilters}
@@ -254,10 +335,10 @@ const Shop = () => {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-white/10 aspect-square rounded-lg mb-4"></div>
+                    <div className="bg-white/10 aspect-[3/4] rounded-lg mb-4"></div>
                     <div className="h-4 bg-white/10 rounded mb-2"></div>
                     <div className="h-4 bg-white/10 rounded w-2/3"></div>
                   </div>
@@ -276,12 +357,12 @@ const Shop = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                   {currentProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
-                
+
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center space-x-2 mt-8">
@@ -294,7 +375,7 @@ const Shop = () => {
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    
+
                     {[...Array(totalPages)].map((_, i) => {
                       const page = i + 1;
                       if (
@@ -321,7 +402,7 @@ const Shop = () => {
                       }
                       return null;
                     })}
-                    
+
                     <Button
                       variant="outline"
                       size="sm"
