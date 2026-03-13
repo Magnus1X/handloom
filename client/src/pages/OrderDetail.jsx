@@ -236,6 +236,22 @@ const OrderDetail = () => {
                 </CardContent>
               </Card>
 
+              {order.customerNote && (
+                <Card className={isDark ? 'bg-black/50 border-white/10' : ''}>
+                  <CardHeader>
+                    <CardTitle className={`${isDark ? 'text-white' : 'text-earth-brown'} flex items-center`}>
+                      <Package className="h-5 w-5 mr-2" />
+                      Customer Note
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className={`p-3 rounded-lg ${isDark ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-amber-50 border border-amber-200'}`}>
+                      <p className={`text-sm ${isDark ? 'text-amber-200' : 'text-amber-800'}`}>{order.customerNote}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               <Card className={isDark ? 'bg-black/50 border-white/10' : ''}>
                 <CardHeader>
                   <CardTitle className={isDark ? 'text-white' : 'text-earth-brown'}>Order Summary</CardTitle>

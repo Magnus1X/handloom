@@ -60,10 +60,23 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: 'COD'
   },
+  paymentStatus: {
+    type: String,
+    default: 'Pending',
+    enum: ['Pending', 'Paid', 'Refunded', 'Failed']
+  },
   status: {
     type: String,
     default: 'Order Placed',
     enum: ['Order Placed', 'Processing', 'Shipping', 'Out for Delivery', 'Delivered', 'Cancelled']
+  },
+  customerNote: {
+    type: String,
+    default: ''
+  },
+  adminNotes: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

@@ -22,6 +22,7 @@ const Checkout = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showNewAddress, setShowNewAddress] = useState(false);
+  const [customerNote, setCustomerNote] = useState('');
 
   const { cart, getTotalPrice, clearCart } = useCart();
   const navigate = useNavigate();
@@ -88,7 +89,8 @@ const Checkout = () => {
           imageUrl: item.imageUrl
         })),
         shippingAddress,
-        totalAmount: getTotalPrice()
+        totalAmount: getTotalPrice(),
+        customerNote
       };
 
       const response = await ordersAPI.create(orderData);
@@ -284,6 +286,16 @@ const Checkout = () => {
                     </div>
 
                     <div className="pt-4">
+                      <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>Add a Note (Optional)</h3>
+                      <textarea
+                        value={customerNote}
+                        onChange={(e) => setCustomerNote(e.target.value)}
+                        placeholder="E.g. Gift wrap please, include a birthday card, handle with care..."
+                        className={`w-full p-3 border rounded-lg h-20 resize-none text-sm ${isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : 'bg-white border-earth-beige text-earth-brown placeholder:text-earth-brown/50'}`}
+                      />
+                    </div>
+
+                    <div className="pt-4">
                       <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>Payment Method</h3>
                       <div className={`${isDark ? 'bg-white/10' : 'bg-earth-cream/50'} p-4 rounded-lg`}>
                         <div className="flex items-center space-x-2">
@@ -307,6 +319,16 @@ const Checkout = () => {
 
                 {selectedAddress && !showNewAddress && (
                   <div className="space-y-4">
+                    <div className="pt-4">
+                      <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>Add a Note (Optional)</h3>
+                      <textarea
+                        value={customerNote}
+                        onChange={(e) => setCustomerNote(e.target.value)}
+                        placeholder="E.g. Gift wrap please, include a birthday card, handle with care..."
+                        className={`w-full p-3 border rounded-lg h-20 resize-none text-sm ${isDark ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50' : 'bg-white border-earth-beige text-earth-brown placeholder:text-earth-brown/50'}`}
+                      />
+                    </div>
+
                     <div className="pt-4">
                       <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-earth-brown'} mb-2`}>Payment Method</h3>
                       <div className={`${isDark ? 'bg-white/10' : 'bg-earth-cream/50'} p-4 rounded-lg`}>
