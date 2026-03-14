@@ -9,7 +9,7 @@ const subcategorySchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['clothing', 'home', 'wellness', 'beauty', 'accessories']
+    enum: ['clothing', 'home', 'beauty', 'accessories']
   },
   image: {
     url: {

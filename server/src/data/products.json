@@ -20,16 +20,6 @@
     "stock": 8
   },
   {
-    "id": "3",
-    "title": "Handcrafted Copper Water Bottle",
-    "price": 899,
-    "category": "wellness",
-    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
-    "description": "Pure copper water bottle with Ayurvedic benefits. Handcrafted by traditional artisans.",
-    "rating": 4.3,
-    "stock": 25
-  },
-  {
     "id": "4",
     "title": "Organic Turmeric Face Pack",
     "price": 599,
@@ -88,15 +78,5 @@
     "description": "Soft cotton throw with traditional Indian motifs. Perfect for adding warmth and style.",
     "rating": 4.5,
     "stock": 12
-  },
-  {
-    "id": "10",
-    "title": "Organic Honey Collection",
-    "price": 1199,
-    "category": "wellness",
-    "imageUrl": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500",
-    "description": "Set of 3 organic honey varieties from different regions of India. Raw and unprocessed.",
-    "rating": 4.8,
-    "stock": 22
   }
 ]
