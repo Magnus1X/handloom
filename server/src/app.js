@@ -10,6 +10,13 @@ import { errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
 
+// Set Security Headers for Google OAuth popups
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  next();
+});
+
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? [process.env.FRONTEND_URL]
@@ -20,12 +27,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
-
-// Set Cross-Origin-Opener-Policy header
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-  next();
-});
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Handloom API' });
