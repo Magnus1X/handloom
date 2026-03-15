@@ -21,6 +21,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
 
+// Set Cross-Origin-Opener-Policy header
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Handloom API' });
 });
